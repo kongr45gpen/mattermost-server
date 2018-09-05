@@ -6,7 +6,9 @@ package app
 import (
 	"net/http"
 
+	"github.com/mattermost/mattermost-server/mlog"
 	"github.com/mattermost/mattermost-server/model"
+	"github.com/mattermost/mattermost-server/plugin"
 )
 
 func (a *App) SaveReactionForPost(reaction *model.Reaction) (*model.Reaction, *model.AppError) {
@@ -45,6 +47,18 @@ func (a *App) SaveReactionForPost(reaction *model.Reaction) (*model.Reaction, *m
 	a.Go(func() {
 		a.sendReactionEvent(model.WEBSOCKET_EVENT_REACTION_ADDED, reaction, post, true)
 	})
+
+	if a.PluginsReady() {
+		a.Go(func() {
+			pluginContext := &plugin.Context{}
+			mlog.Debug("Reaction has been added")
+			a.Plugins.RunMultiPluginHook(func(hooks plugin.Hooks) bool {
+				mlog.Debug("Reaction has been sent to plugin")
+				hooks.ReactionHasBeenAdded(pluginContext, post, reaction)
+				return true
+			}, plugin.ReactionHasBeenAddedId)
+		})
+	}
 
 	return reaction, nil
 }
@@ -95,6 +109,18 @@ func (a *App) DeleteReactionForPost(reaction *model.Reaction) *model.AppError {
 	a.Go(func() {
 		a.sendReactionEvent(model.WEBSOCKET_EVENT_REACTION_REMOVED, reaction, post, hasReactions)
 	})
+
+	if a.PluginsReady() {
+		a.Go(func() {
+			pluginContext := &plugin.Context{}
+			mlog.Debug("Reaction has been removed")
+			a.Plugins.RunMultiPluginHook(func(hooks plugin.Hooks) bool {
+				mlog.Debug("Reaction removal has been sent to plugin")
+				hooks.ReactionHasBeenRemoved(pluginContext, post, reaction)
+				return true
+			}, plugin.ReactionHasBeenRemovedId)
+		})
+	}
 
 	return nil
 }

@@ -79,8 +79,10 @@ func newSupervisor(pluginInfo *model.BundleInfo, parentLogger *mlog.Logger, apiI
 		return nil, err
 	} else {
 		for _, hookName := range impl {
+			mlog.Debug(fmt.Sprintf("Checking if plugin implements hook %s [id %d]", hookName, hookNameToId[hookName]))
 			if hookId, ok := hookNameToId[hookName]; ok {
 				supervisor.implemented[hookId] = true
+				mlog.Debug("it does!")
 			}
 		}
 	}

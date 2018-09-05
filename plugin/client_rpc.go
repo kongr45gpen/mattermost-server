@@ -98,6 +98,7 @@ func (s *hooksRPCServer) Implemented(args struct{}, reply *[]string) error {
 	var methods []string
 	for i := 0; i < ifaceType.NumMethod(); i++ {
 		method := ifaceType.Method(i)
+		mlog.Debug(fmt.Sprintf("I am checking if method %s is supported by %s", method.Name, ifaceType.Name))
 		if m, ok := implType.MethodByName(method.Name); !ok {
 			continue
 		} else if m.Type.NumIn() != method.Type.NumIn()+1 {

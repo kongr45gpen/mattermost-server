@@ -272,6 +272,8 @@ func (env *Environment) RunMultiPluginHook(hookRunnerFunc multiPluginHookRunnerF
 	env.activePlugins.Range(func(key, value interface{}) bool {
 		activePlugin := value.(activePlugin)
 
+		mlog.Debug(fmt.Sprintf("Checking plugin %s to send hook %d", key, hookId))
+
 		if activePlugin.supervisor == nil || !activePlugin.supervisor.Implements(hookId) {
 			return true
 		}

@@ -233,7 +233,31 @@ func (a *App) ExecuteCommand(args *model.CommandArgs) (*model.CommandResponse, *
 				var req *http.Request
 				if cmd.Method == model.COMMAND_METHOD_GET {
 					req, _ = http.NewRequest(http.MethodGet, cmd.URL, nil)
-					req.URL.RawQuery = p.Encode()
+					// query, _ := url.ParseQuery(req.URL.RawQuery)
+
+					// for k, v := range p {
+					// 	for _, vv := range v {
+					// 		if query.Get(k) != "" {
+					// 			mlog.Warn(fmt.Sprintf("HTTP GET query parameter %s is already ", k))
+					// 		}
+
+					// 		query.Add(k, vv)
+					// 	}
+					// }
+
+					if req.URL.RawQuery != "" {
+						req.URL.RawQuery += "&"
+					}
+
+					req.URL.RawQuery += p.Encode()
+
+					// if req.URL.RawQuery == "" {
+					// 	req.URL.RawQuery = p.Encode()
+					// } else {
+					// 	req.URL.RawQuery = p
+					// }
+
+					// req.URL.RawQuery = p.Encode()
 				} else {
 					req, _ = http.NewRequest(http.MethodPost, cmd.URL, strings.NewReader(p.Encode()))
 				}
