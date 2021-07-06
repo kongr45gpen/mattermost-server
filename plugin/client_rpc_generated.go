@@ -5031,3 +5031,63 @@ func (s *apiRPCServer) RequestTrialLicense(args *Z_RequestTrialLicenseArgs, retu
 	}
 	return nil
 }
+
+type Z_FollowThreadArgs struct {
+	A string
+	B string
+	C string
+}
+
+type Z_FollowThreadReturns struct {
+	A *model.AppError
+}
+
+func (g *apiRPCClient) FollowThread(userId string, teamId string, threadId string) *model.AppError {
+	_args := &Z_FollowThreadArgs{userId, teamId, threadId}
+	_returns := &Z_FollowThreadReturns{}
+	if err := g.client.Call("Plugin.FollowThread", _args, _returns); err != nil {
+		log.Printf("RPC call to FollowThread API failed: %s", err.Error())
+	}
+	return _returns.A
+}
+
+func (s *apiRPCServer) FollowThread(args *Z_FollowThreadArgs, returns *Z_FollowThreadReturns) error {
+	if hook, ok := s.impl.(interface {
+		FollowThread(userId string, teamId string, threadId string) *model.AppError
+	}); ok {
+		returns.A = hook.FollowThread(args.A, args.B, args.C)
+	} else {
+		return encodableError(fmt.Errorf("API FollowThread called but not implemented."))
+	}
+	return nil
+}
+
+type Z_UnfollowThreadArgs struct {
+	A string
+	B string
+	C string
+}
+
+type Z_UnfollowThreadReturns struct {
+	A *model.AppError
+}
+
+func (g *apiRPCClient) UnfollowThread(userId string, teamId string, threadId string) *model.AppError {
+	_args := &Z_UnfollowThreadArgs{userId, teamId, threadId}
+	_returns := &Z_UnfollowThreadReturns{}
+	if err := g.client.Call("Plugin.UnfollowThread", _args, _returns); err != nil {
+		log.Printf("RPC call to UnfollowThread API failed: %s", err.Error())
+	}
+	return _returns.A
+}
+
+func (s *apiRPCServer) UnfollowThread(args *Z_UnfollowThreadArgs, returns *Z_UnfollowThreadReturns) error {
+	if hook, ok := s.impl.(interface {
+		UnfollowThread(userId string, teamId string, threadId string) *model.AppError
+	}); ok {
+		returns.A = hook.UnfollowThread(args.A, args.B, args.C)
+	} else {
+		return encodableError(fmt.Errorf("API UnfollowThread called but not implemented."))
+	}
+	return nil
+}

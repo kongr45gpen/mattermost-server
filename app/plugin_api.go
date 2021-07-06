@@ -1144,3 +1144,11 @@ func (api *PluginAPI) RequestTrialLicense(requesterID string, users int, termsAc
 
 	return api.app.Srv().RequestTrialLicense(trialLicenseRequest)
 }
+
+func (api *PluginAPI) FollowThread(userId string, teamId string, threadId string) *model.AppError {
+	return api.app.UpdateThreadFollowForUser(userId, teamId, threadId, true)
+}
+
+func (api *PluginAPI) UnfollowThread(userId string, teamId string, threadId string) *model.AppError {
+	return api.app.UpdateThreadFollowForUser(userId, teamId, threadId, false)
+}

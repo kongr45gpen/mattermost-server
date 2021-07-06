@@ -1134,3 +1134,17 @@ func (api *apiTimerLayer) RequestTrialLicense(requesterID string, users int, ter
 	api.recordTime(startTime, "RequestTrialLicense", _returnsA == nil)
 	return _returnsA
 }
+
+func (api *apiTimerLayer) FollowThread(userId string, teamId string, threadId string) *model.AppError {
+	startTime := timePkg.Now()
+	_returnsA := api.apiImpl.FollowThread(userId, teamId, threadId)
+	api.recordTime(startTime, "FollowThread", _returnsA == nil)
+	return _returnsA
+}
+
+func (api *apiTimerLayer) UnfollowThread(userId string, teamId string, threadId string) *model.AppError {
+	startTime := timePkg.Now()
+	_returnsA := api.apiImpl.UnfollowThread(userId, teamId, threadId)
+	api.recordTime(startTime, "UnfollowThread", _returnsA == nil)
+	return _returnsA
+}

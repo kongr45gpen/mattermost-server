@@ -1071,6 +1071,16 @@ type API interface {
 	//
 	// Minimum server version: 5.36
 	RequestTrialLicense(requesterID string, users int, termsAccepted bool, receiveEmailsAccepted bool) *model.AppError
+
+	// FollowThread makes a user follow and receive notifications from a message thread
+	//
+	// Minimum server version: 5.37
+	FollowThread(userId string, teamId string, threadId string) *model.AppError
+
+	// UnfollowThread makes a user not follow a message thread
+	//
+	// Minimum server version: 5.37
+	UnfollowThread(userId string, teamId string, threadId string) *model.AppError
 }
 
 var handshake = plugin.HandshakeConfig{
